@@ -19,6 +19,10 @@ on:
       - "Tests/**"
       - ".github/workflows/native-ios.yml"
 
+concurrency:
+  group: ipad-native-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   native-build-and-test:
     runs-on: macos-15

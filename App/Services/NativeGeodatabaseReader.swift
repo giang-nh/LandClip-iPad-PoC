@@ -49,7 +49,7 @@ struct NativeGeodatabaseReader: Sendable {
             landclip_gis_free_string(nativeError)
         }
         guard let jsonPointer else {
-            let message = nativeError.map(String.init(cString:)) ?? "Không thể đọc geodatabase."
+            let message = nativeError.map { String(cString: $0) } ?? "Không thể đọc geodatabase."
             throw NativeGeodatabaseError.scanFailed(message)
         }
         guard let response = try? JSONDecoder().decode(

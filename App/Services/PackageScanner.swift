@@ -103,7 +103,7 @@ struct NativePackageScanner: PackageScanning {
         }
         defer { landclip_gis_free_string(nativeError) }
         guard succeeded == 1 else {
-            let message = nativeError.map(String.init(cString:)) ?? "Lỗi native không xác định."
+            let message = nativeError.map { String(cString: $0) } ?? "Lỗi native không xác định."
             throw PackageScanError.extractionFailed(message)
         }
     }

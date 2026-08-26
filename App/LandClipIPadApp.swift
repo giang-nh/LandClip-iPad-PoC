@@ -4,8 +4,7 @@ import SwiftUI
 struct LandClipIPadApp: App {
     var body: some Scene {
         WindowGroup {
-            PackageCatalogView(model: PackageCatalogModel(scanner: MockPackageScanner()))
+            PackageCatalogView(model: PackageCatalogModel(scanner: DefaultPackageScanner()))
         }
     }
 }
-

@@ -24,9 +24,10 @@ final class PackageCatalogModel: ObservableObject {
         }
         do {
             state = .ready(try await scanner.scan(packageURL: url))
+        } catch is CancellationError {
+            state = .idle
         } catch {
             state = .failed(error.localizedDescription)
         }
     }
 }
-

@@ -19,6 +19,21 @@ cloud và không phụ thuộc LandClip Windows.
 - Chỉ bật các driver OpenFileGDB, GPKG và GeoJSON.
 - Kiểm tra license của dependency trước khi phân phối.
 
+### Trạng thái tích hợp
+
+- [x] C ABI không để kiểu C++/GDAL lọt sang Swift.
+- [x] Adapter OpenFileGDB chỉ mở read-only và trả layer, geometry, CRS, feature count.
+- [x] Swift adapter quản lý ownership của chuỗi native và decode catalog.
+- [x] Có script CI build GDAL/PROJ/GEOS/SQLite cho device + simulator.
+- [x] Có cấu hình link XCFramework và bật `LANDCLIP_WITH_GDAL=1`.
+- [x] Copy GDAL/PROJ resource data vào app bundle và cấu hình runtime search path.
+- [ ] Xác minh workflow native build xanh trên GitHub macOS runner.
+- [ ] Thêm fixture `.gdb` công khai và integration test OpenFileGDB thật.
+- [ ] Ghi nhận phiên bản và license chính xác của binary được chốt.
+
+Không bật macro trước khi XCFramework được link: nhánh fallback là chủ ý để CI
+scaffold vẫn kiểm tra được Swift/C ABI, nhưng không được xem là pass Giai đoạn 1.
+
 ## Giai đoạn 2 — catalog thật
 
 - Sao chép PPKX vào sandbox theo luồng streaming.
@@ -33,4 +48,3 @@ cloud và không phụ thuộc LandClip Windows.
 3. Peak memory không tăng theo toàn bộ kích thước layer.
 4. Scan có progress và cancel.
 5. File tạm được dọn sau khi hoàn thành hoặc hủy.
-

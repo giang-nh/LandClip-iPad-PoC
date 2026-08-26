@@ -1,4 +1,7 @@
 .DS_Store
+.tools/
+__pycache__/
+*.pyc
 .build/
 build/
 DerivedData/
@@ -6,4 +9,5 @@ LandClipIPad.xcodeproj/
 *.xcuserstate
 xcuserdata/
 Vendor/*.xcframework
+Vendor/Resources/
 Fixtures/private/

@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct PackageCatalogView: View {
     @StateObject private var model: PackageCatalogModel
     @State private var importing = false
+    @State private var scanTask: Task<Void, Never>?
 
     init(model: PackageCatalogModel) {
         _model = StateObject(wrappedValue: model)
@@ -32,8 +33,10 @@ struct PackageCatalogView: View {
             allowsMultipleSelection: false
         ) { result in
             guard case let .success(urls) = result, let url = urls.first else { return }
-            Task { await model.scan(url) }
+            scanTask?.cancel()
+            scanTask = Task { await model.scan(url) }
         }
+        .onDisappear { scanTask?.cancel() }
     }
 
     @ViewBuilder
@@ -42,7 +45,12 @@ struct PackageCatalogView: View {
         case .idle:
             Text("Chưa chọn package").foregroundStyle(.secondary)
         case let .scanning(name):
-            HStack { ProgressView(); Text("Đang scan \(name)…") }
+            HStack {
+                ProgressView()
+                Text("Đang scan \(name)…")
+                Spacer()
+                Button("Hủy") { scanTask?.cancel() }
+            }
         case let .ready(catalog):
             LabeledContent("Package", value: catalog.packageName)
             LabeledContent("Dung lượng", value: ByteCountFormatter.string(fromByteCount: catalog.packageSize, countStyle: .file))

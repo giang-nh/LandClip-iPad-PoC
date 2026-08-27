@@ -47,8 +47,7 @@ jobs:
           bash scripts/build-native-xcframeworks.sh 2>&1 | tee native-build.log
           STATUS=${PIPESTATUS[0]}
           if [ "$STATUS" -ne 0 ]; then
-            grep -E '(CMake Error|FAILED:|fatal error:|error:|curl:|No such file|not found)' \
-              native-build.log | tail -30 | \
+            tail -40 native-build.log | \
               while IFS= read -r line; do echo "::error::$line"; done
           fi
           exit "$STATUS"

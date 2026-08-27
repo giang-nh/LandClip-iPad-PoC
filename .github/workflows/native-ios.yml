@@ -35,14 +35,23 @@ jobs:
 
       - name: Restore native build cache
         id: native-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: Vendor
           key: landclip-native-v2-gdal-3.11.4-proj-9.6.2-geos-3.14.1-sqlite-3500400-archive-3.8.9-${{ hashFiles('scripts/build-native-xcframeworks.sh') }}
 
       - name: Build native XCFrameworks
         if: steps.native-cache.outputs.cache-hit != 'true'
-        run: bash scripts/build-native-xcframeworks.sh
+        run: |
+          set +e
+          bash scripts/build-native-xcframeworks.sh 2>&1 | tee native-build.log
+          STATUS=${PIPESTATUS[0]}
+          if [ "$STATUS" -ne 0 ]; then
+            grep -E '(CMake Error|FAILED:|fatal error:|error:|curl:|No such file|not found)' \
+              native-build.log | tail -30 | \
+              while IFS= read -r line; do echo "::error::$line"; done
+          fi
+          exit "$STATUS"
 
       - name: Generate native Xcode project
         run: xcodegen generate --spec project-native.yml
